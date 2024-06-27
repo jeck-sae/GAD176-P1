@@ -2,8 +2,6 @@ using System.Collections.Generic;
 
 public class ManagedBehaviour : ManagedBehaviourBase
 {
-    public static ReferenceSetToggle PauseAll = new ReferenceSetToggle();
-
     private bool initialized;
 
     public virtual bool UpdateWhenPaused => false;
@@ -70,33 +68,9 @@ public class ManagedBehaviour : ManagedBehaviourBase
     {
         if (!UpdateWhenPaused)
         {
-            return !PauseAll.True;
+            //logic for pausing
         }
         return true;
     }
 }
 
-
-public class ReferenceSetToggle
-{
-    private HashSet<object> references = new HashSet<object>();
-
-    public bool True
-    {
-        get
-        {
-            references.RemoveWhere((object x) => x == null);
-            return references.Count > 0;
-        }
-    }
-
-    public void Add(object obj)
-    {
-        references.Add(obj);
-    }
-
-    public void Remove(object obj)
-    {
-        references.Remove(obj);
-    }
-}

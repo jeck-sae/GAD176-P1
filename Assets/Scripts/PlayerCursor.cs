@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// From The Hex
 public class PlayerCursor : ManagedBehaviour
 {
     public static PlayerCursor instance;
@@ -14,9 +16,6 @@ public class PlayerCursor : ManagedBehaviour
 
     public Action<Interactable> CurrentInteractableExited;
 
-    public ReferenceSetToggle DisableInput = new ReferenceSetToggle();
-
-    private bool inputWasDisabled;
 
     [SerializeField]
     private Camera rayCamera;
@@ -34,7 +33,6 @@ public class PlayerCursor : ManagedBehaviour
     public override void ManagedUpdate()
     {
         base.ManagedUpdate();
-        UpdateInputDisabled();
         UpdatePosition();
         UpdateMainInput();
         UpdateDragInput();
@@ -46,23 +44,10 @@ public class PlayerCursor : ManagedBehaviour
         transform.position = new Vector3(vector.x, vector.y, rayCamera.nearClipPlane);
     }
 
-    private void UpdateInputDisabled()
-    {
-        if (!inputWasDisabled && DisableInput.True && currentInteractable != null)
-        {
-            currentInteractable.CursorExit();
-            currentInteractable = null;
-        }
-        inputWasDisabled = DisableInput.True;
-    }
-
     private void UpdateMainInput()
     {
         currentInteractable = UpdateCurrentInteractable(currentInteractable, excludedLayers.ToArray());
-        if (DisableInput.True)
-        {
-            return;
-        }
+
         if (currentInteractable != null)
         {
             currentInteractable.CursorStay();
@@ -83,7 +68,7 @@ public class PlayerCursor : ManagedBehaviour
 
     private void UpdateDragInput()
     {
-        if (cursorDownInteractable != null && !DisableInput.True && currentInteractable != cursorDownInteractable)
+        if (cursorDownInteractable != null && currentInteractable != cursorDownInteractable)
         {
             cursorDownInteractable.CursorDragOff();
             cursorDownInteractable = null;
@@ -104,7 +89,7 @@ public class PlayerCursor : ManagedBehaviour
                 CurrentInteractableExited?.Invoke(current);
                 current.CursorExit();
             }
-            if (!(interactable != null) || DisableInput.True)
+            if (interactable == null)
             {
                 return null;
             }

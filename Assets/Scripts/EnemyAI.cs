@@ -6,7 +6,8 @@ public class EnemyAI : Unit
 {
     public float visionRange = 10;
     public float rotationSpeedWhenIdle = 10;
-    public float chaseSpeed = 3.5f;
+    public float chaseSpeed = 6f;
+    public float slowWhenNearTarget = 3.5f;
 
     private void Start()
     {
@@ -69,7 +70,10 @@ public class EnemyAI : Unit
     public void ChaseTarget()
     {
         var direction = (target.transform.position - transform.position).normalized;
-        MoveBy(direction * chaseSpeed * Time.deltaTime);
+        var distance = Vector2.Distance(target.transform.position, transform.position);
+        var speed = chaseSpeed * Mathf.Clamp01(distance/slowWhenNearTarget);
+        var velocity = direction * speed;
+        MoveBy(velocity * Time.deltaTime);
     }
 
 

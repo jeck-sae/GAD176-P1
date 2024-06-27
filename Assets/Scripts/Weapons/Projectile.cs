@@ -7,6 +7,7 @@ public partial class Projectile : ManagedBehaviour
     [ReadOnly] public float damage;
     [ReadOnly] public float speed;
     [ReadOnly] public Targetable shotBy;
+    [SerializeField] GameObject impactEffect;
     public virtual void Initialize(Targetable shotBy, float damage, float speed, float duration)
     {
         this.damage = damage;
@@ -14,6 +15,7 @@ public partial class Projectile : ManagedBehaviour
         this.shotBy = shotBy;
         Destroy(gameObject, duration);
     }
+
 
     public override void ManagedUpdate()
     {
@@ -23,6 +25,8 @@ public partial class Projectile : ManagedBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.layer != LayerMask.NameToLayer("Level"))
+            return;
         var targetable = collision.GetComponent<Targetable>();
         if (targetable == null)
         {
@@ -40,6 +44,7 @@ public partial class Projectile : ManagedBehaviour
     public void Impact()
     {
         enabled = false;
+        Instantiate(impactEffect, transform.position, transform.rotation);
         Destroy(gameObject);
     }
 }

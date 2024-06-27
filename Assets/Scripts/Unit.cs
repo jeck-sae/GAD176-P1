@@ -25,15 +25,19 @@ public class Unit : Targetable
             LookAt(target.transform.position);
     }
 
-    public void MoveBy(Vector2 movement)
+    public void MoveBy(Vector2 movement, bool multiplyBySpeed = true)
     {
         Vector2 currentPos = new Vector2(transform.position.x, transform.position.y);
-        m_rigidbody.MovePosition(currentPos + movement * movementSpeed);
+
+        if (multiplyBySpeed)
+            movement *= movementSpeed;
+
+        m_rigidbody.MovePosition(currentPos + movement);
     }
 
     public virtual void Shoot()
     {
-        weapon.TryShooting(this);
+        weapon.TryShooting();
     }
 
     public void LookAt(Vector3 target)
@@ -42,6 +46,23 @@ public class Unit : Targetable
         transform.right = lookDirection;
     }
 
+    public void PickupWeapon(Weapon newWeapon)
+    {
+        if(weapon == newWeapon) 
+            return;
+        
+        if(weapon != null)
+            DropWeapon();
+
+        newWeapon.Pickup(this);
+        weapon = newWeapon;
+    }
+
+    public void DropWeapon()
+    {
+        weapon.Drop();
+        weapon = null;
+    }
     /*public void ModifyHealth(float amount)
     {
         if (amount <= 0)
