@@ -25,7 +25,7 @@ public class EnemyAI : Unit
             float distance = Vector3.Distance(target.transform.position, transform.position);
             if(distance < weapon.attackDistance)
             {
-                Shoot();
+                TryAttacking();
             }
             else
             {

@@ -11,7 +11,7 @@ public class ExplodeWeapon : Weapon
     public float explosionRange;
     public float damage;
 
-    public override void Shoot()
+    public override void Attack()
     {
         var hit = Physics2D.CircleCastAll(transform.position, explosionRange, Vector2.zero);
         foreach (var item in hit) 

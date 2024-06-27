@@ -45,7 +45,7 @@ public class ProjectileWeapon : Weapon
         isReloading = false;
     }
 
-    public override void TryShooting()
+    public override void TryAttacking()
     {
         if (currentAmmo <= 0)
         {
@@ -57,13 +57,13 @@ public class ProjectileWeapon : Weapon
 
         if (nextShotMinTime <= Time.time) 
         {
-            Shoot();
+            Attack();
             nextShotMinTime = Time.time + attackSpeed;
         }
     }
     
 
-    public override void Shoot()
+    public override void Attack()
     {
         SpawnProjectile(owner);
         currentAmmo--;

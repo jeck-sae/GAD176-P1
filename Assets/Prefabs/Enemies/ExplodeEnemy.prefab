@@ -120,7 +120,6 @@ MonoBehaviour:
   OnDamaged:
     m_PersistentCalls:
       m_Calls: []
-  movementSpeed: 1
   weapon: {fileID: 1383045365199592593}
   target: {fileID: 0}
   visionRange: 10

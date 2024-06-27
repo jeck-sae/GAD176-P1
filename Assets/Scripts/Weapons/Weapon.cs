@@ -12,45 +12,40 @@ public abstract class Weapon : Interactable2D
 
     protected override void ManagedInitialize()
     {
-        if (owner == null)
-        {
-            Unit u = GetComponentInParent<Unit>();
-            if (u)
-            {
-                SetOwner(u);
-                owner.weapon = this;
-            }
-        }
-        if(sr == null)
+        if (!sr)
             sr = GetComponent<SpriteRenderer>();
+
+        if (!owner)
+            owner = GetComponentInParent<Unit>();
+
+        if(owner)
+            SetEquipped(owner);
     }
 
     public virtual void Reload() { }
     
-    public virtual void TryShooting() 
-        => Shoot();
+    public virtual void TryAttacking() 
+        => Attack();
 
-    public virtual void Shoot() { }
+    public virtual void Attack() { }
 
-    public virtual void Drop()
+    protected virtual void Drop()
     {
-        sr.enabled = true;
+        owner.WeaponDropped -= Drop;
+        if(sr) sr.enabled = true;
         owner = null;
         transform.SetParent(null);
     }
 
-    public virtual void Pickup(Unit unit)
-    {
-        sr.enabled = false;
-        SetOwner(unit);
-    }
-    protected void SetOwner(Unit unit)
+    public virtual void SetEquipped(Unit unit)
     {
         owner = unit;
+        owner.WeaponDropped += Drop;
+
+        if(sr) sr.enabled = false;
         transform.SetParent(owner.transform);
         transform.position = owner.transform.position;
         transform.rotation = owner.transform.rotation;
-
     }
 
     protected override void OnCursorSelectStart()

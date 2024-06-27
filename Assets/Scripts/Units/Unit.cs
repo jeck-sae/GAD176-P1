@@ -4,18 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class Unit : Targetable
 {
-    public float movementSpeed;
     public Weapon weapon;
-
     public Targetable target;
 
-    Rigidbody2D m_rigidbody;
+    public event Action WeaponDropped;
+
+    protected Rigidbody2D m_rigidbody;
 
     protected override void ManagedInitialize()
     {
         m_rigidbody = GetComponent<Rigidbody2D>();
+
+        if(!weapon)
+        {
+            weapon = GetComponentInChildren<Weapon>();
+        }    
 
         base.ManagedInitialize();
     }
@@ -25,24 +31,21 @@ public class Unit : Targetable
             LookAt(target.transform.position);
     }
 
-    public void MoveBy(Vector2 movement, bool multiplyBySpeed = true)
+    public void MoveBy(Vector2 movement)
     {
         Vector2 currentPos = new Vector2(transform.position.x, transform.position.y);
-
-        if (multiplyBySpeed)
-            movement *= movementSpeed;
 
         m_rigidbody.MovePosition(currentPos + movement);
     }
 
-    public virtual void Shoot()
+    public virtual void TryAttacking()
     {
-        weapon.TryShooting();
+        weapon.TryAttacking();
     }
 
-    public void LookAt(Vector3 target)
+    public void LookAt(Vector2 target)
     {
-        Vector2 lookDirection = target - transform.position;
+        Vector2 lookDirection = target - (Vector2)transform.position;
         transform.right = lookDirection;
     }
 
@@ -54,13 +57,13 @@ public class Unit : Targetable
         if(weapon != null)
             DropWeapon();
 
-        newWeapon.Pickup(this);
+        newWeapon.SetEquipped(this);
         weapon = newWeapon;
     }
 
     public void DropWeapon()
     {
-        weapon.Drop();
+        WeaponDropped?.Invoke();
         weapon = null;
     }
     /*public void ModifyHealth(float amount)

@@ -6,6 +6,7 @@ public class CharacterController : ManagedBehaviour
 {
     Unit unit;
     Vector2 m_movement;
+    public float movementSpeed;
 
     protected override void ManagedInitialize()
     {
@@ -17,10 +18,10 @@ public class CharacterController : ManagedBehaviour
         m_movement.x = Input.GetAxis("Horizontal");
         m_movement.y = Input.GetAxis("Vertical");
 
-        unit.MoveBy(m_movement.normalized * Time.deltaTime);
+        unit.MoveBy(m_movement.normalized * movementSpeed * Time.deltaTime);
 
         if (Input.GetButton("Fire1"))
-            unit.Shoot();
+            unit.TryAttacking();
 
         if(Input.GetKeyDown(KeyCode.R))
             unit.weapon.Reload();
