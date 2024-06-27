@@ -136,3 +136,4 @@ MonoBehaviour:
   damage: 0
   speed: 0
   shotBy: {fileID: 0}
+  impactEffect: {fileID: 4407075247687842582, guid: be0dd94fd55b8ef49a836f2c181f16c5, type: 3}

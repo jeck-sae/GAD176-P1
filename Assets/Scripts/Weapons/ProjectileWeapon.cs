@@ -13,8 +13,10 @@ public class ProjectileWeapon : Weapon
     public float projectileSpeedVariation = 1;
     public float projectileDirectionVariation = 0;
     public float projectileLifetime = 3;
+
     public int projectilesPerShot = 1;
 
+    public float reloadSpeed = 1;
     public int maxAmmo = 6;
 
 
@@ -22,38 +24,48 @@ public class ProjectileWeapon : Weapon
     protected float nextShotMinTime = 0;
     protected bool isReloading;
 
+    protected override void ManagedInitialize()
+    {
+        currentAmmo = maxAmmo;
+        base.ManagedInitialize();
+    }
+
     public override void Reload()
     {
+        if (currentAmmo == maxAmmo)
+            return;
         //add animation
         isReloading = true;
+        CustomCoroutine.WaitThenExecute(reloadSpeed, DoReload);
+    }
+
+    protected void DoReload()
+    {
         currentAmmo = maxAmmo;
         isReloading = false;
     }
 
-    public override void TryShooting(Unit shooter)
+    public override void TryShooting()
     {
-        if(nextShotMinTime <= Time.time) 
+        if (currentAmmo <= 0)
         {
-            Shoot(shooter);
+            Reload();
+            return;
+        }
+        if (isReloading)
+            return;
+
+        if (nextShotMinTime <= Time.time) 
+        {
+            Shoot();
             nextShotMinTime = Time.time + attackSpeed;
         }
     }
     
 
-    public override void Shoot(Unit shooter)
+    public override void Shoot()
     {
-        if(currentAmmo <= 0)
-        {
-            Reload();
-            return;
-        }
-
-        if(isReloading && currentAmmo > 0) 
-        { 
-            //Stop reloading
-        }
-
-        SpawnProjectile(shooter);
+        SpawnProjectile(owner);
         currentAmmo--;
     }
 
@@ -79,4 +91,5 @@ public class ProjectileWeapon : Weapon
         var variation = Random.Range(0, projectileDirectionVariation) - projectileDirectionVariation / 2;
         return Quaternion.Euler(transform.rotation.eulerAngles + Vector3.forward * variation);
     }
+
 }

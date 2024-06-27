@@ -11,14 +11,14 @@ public class ExplodeWeapon : Weapon
     public float explosionRange;
     public float damage;
 
-    public override void Shoot(Unit shooter)
+    public override void Shoot()
     {
         var hit = Physics2D.CircleCastAll(transform.position, explosionRange, Vector2.zero);
         foreach (var item in hit) 
         { 
             var targetable = item.transform.GetComponent<Targetable>();
             
-            if(targetable != null && targetable != shooter)
+            if(targetable != null && targetable != owner)
             {
                 targetable.Damage(damage);
                 Debug.Log(targetable.name + " " + damage);
@@ -28,6 +28,6 @@ public class ExplodeWeapon : Weapon
         // If close to player, screenshake
 
         var explosionEffect = Instantiate(explosionEffectPrefab, transform.position, transform.rotation);
-        shooter.Die();
+        owner.Die();
     }
 }
