@@ -53,6 +53,7 @@ public class Unit : Targetable
         if(weapon != null)
             DropWeapon();
 
+        Debug.Log("Picked up " +  newWeapon.name);
         newWeapon.SetEquipped(this);
         weapon = newWeapon;
     }
