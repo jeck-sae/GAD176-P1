@@ -1,8 +1,4 @@
 using Sirenix.OdinInspector;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
 
 public class Targetable : ManagedBehaviour
 {
@@ -11,29 +7,21 @@ public class Targetable : ManagedBehaviour
     public bool isDead;
     public bool isVulnerable = true;
 
-
-    public UnityEvent OnDied;
-    public UnityEvent OnDamaged;
-
     protected override void ManagedInitialize()
     {
         currentHealth = maxHealth;
     }
 
-
+    //deals damage to this unit and checks if it's dead
     public void Damage(float amount)
     {
         if (isDead || !isVulnerable)
             return;
 
         currentHealth -= amount;
-        OnDamaged?.Invoke();
 
         if (currentHealth <= 0)
-        {
-            OnDied?.Invoke();
             Die();
-        }
     }
 
     public virtual void Die()

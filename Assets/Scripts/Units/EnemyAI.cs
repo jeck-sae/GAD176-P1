@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyAI : Unit
@@ -9,14 +7,17 @@ public class EnemyAI : Unit
     public float chaseSpeed = 6f;
     public float slowWhenNearTarget = 3.5f;
 
-    private void Start()
-    {
-        
-    }
-
     public override void ManagedUpdate()
     {
-        SearchTarget();
+        BehaviorUpdate();
+    }
+
+    //Handles the behavior of the unit. By default, it idles until an enemy is in range,
+    //at which point it starts chasing it until it's within the weapon range or the target
+    //escapes. When it is within weapon range, it attacks.
+    public virtual void BehaviorUpdate()
+    {
+        TargetUpdate();
 
         if (target)
         {
@@ -36,14 +37,10 @@ public class EnemyAI : Unit
         {
             Idle();
         }
-
-        //idle
-        //chase
-        //shoot
     }
 
 
-    public void SearchTarget()
+    public void TargetUpdate()
     {
         if (target && IsValidTarget(target))
             return;
@@ -55,6 +52,9 @@ public class EnemyAI : Unit
             target = player;
     }
 
+    //checks if the target is within vision range.
+    //TODO: add check for direct line of sight (so that the
+    //target is not valid if there is a wall in the way)
     protected bool IsValidTarget(Targetable target)
     {
         if (!target) return false;
@@ -62,11 +62,13 @@ public class EnemyAI : Unit
         return distance < visionRange;
     }
 
+    //Default idle behavior is to slowly rotate
     public void Idle()
     {
         transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.forward * Time.deltaTime * rotationSpeedWhenIdle);
     }
 
+    //moves towards the player and gets slower the closer it gets
     public void ChaseTarget()
     {
         var direction = (target.transform.position - transform.position).normalized;

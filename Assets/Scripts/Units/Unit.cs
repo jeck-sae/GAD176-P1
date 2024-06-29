@@ -1,8 +1,5 @@
-using System.Collections;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Unit : Targetable
@@ -19,9 +16,7 @@ public class Unit : Targetable
         m_rigidbody = GetComponent<Rigidbody2D>();
 
         if(!weapon)
-        {
             weapon = GetComponentInChildren<Weapon>();
-        }    
 
         base.ManagedInitialize();
     }
@@ -40,9 +35,10 @@ public class Unit : Targetable
 
     public virtual void TryAttacking()
     {
-        weapon.TryAttacking();
+        weapon?.TryAttacking();
     }
 
+    //rotate towards a target
     public void LookAt(Vector2 target)
     {
         Vector2 lookDirection = target - (Vector2)transform.position;
@@ -66,25 +62,4 @@ public class Unit : Targetable
         WeaponDropped?.Invoke();
         weapon = null;
     }
-    /*public void ModifyHealth(float amount)
-    {
-        if (amount <= 0)
-            Damage(amount);
-
-        Heal(amount);
-    }
-    public void Heal(float amount)
-    {
-        if (isDead)
-            return;
-
-        if (amount <= 0)
-            return;
-
-        currentHealth += amount;
-
-        if (currentHealth > maxHealth)
-            currentHealth = maxHealth;
-    }*/
-
 }

@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Windows.WebCam;
-using static UnityEngine.GraphicsBuffer;
 
 public abstract class Weapon : Interactable2D 
 {
@@ -50,6 +46,7 @@ public abstract class Weapon : Interactable2D
 
     protected override void OnCursorSelectStart()
     {
+        //when clicked, equip to the player unit
         FindObjectOfType<Player>().PickupWeapon(this);
     }
 

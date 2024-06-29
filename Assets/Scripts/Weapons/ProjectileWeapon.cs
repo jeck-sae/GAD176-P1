@@ -1,6 +1,4 @@
 using Sirenix.OdinInspector;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ProjectileWeapon : Weapon
@@ -34,11 +32,13 @@ public class ProjectileWeapon : Weapon
     {
         if (currentAmmo == maxAmmo)
             return;
-        //add animation
+
+        //TODO: add animation/sound
         isReloading = true;
         CustomCoroutine.WaitThenExecute(reloadSpeed, DoReload);
     }
 
+    //end of the reload animation
     protected void DoReload()
     {
         currentAmmo = maxAmmo;
@@ -47,38 +47,39 @@ public class ProjectileWeapon : Weapon
 
     public override void TryAttacking()
     {
+        //attack if possible.
+        if (isReloading)
+            return;
+
         if (currentAmmo <= 0)
         {
             Reload();
             return;
         }
-        if (isReloading)
+
+        if (nextShotMinTime > Time.time)
             return;
 
-        if (nextShotMinTime <= Time.time) 
-        {
-            Attack();
-            nextShotMinTime = Time.time + attackSpeed;
-        }
+        Attack();
     }
     
 
     public override void Attack()
     {
-        SpawnProjectile(owner);
-        currentAmmo--;
-    }
-
-    
-
-    protected virtual void SpawnProjectile(Unit shooter)
-    {
         for(int i = 0; i < projectilesPerShot; i++)
         {
             var go = Instantiate(projectilePrefab, transform.position, GetProjectileDirection());
             var proj = go.GetComponent<Projectile>();
-            proj.Initialize(shooter, damage, GetProjectileSpeed(), projectileLifetime);
+            InitializeProjectile(proj);
         }
+        nextShotMinTime = Time.time + attackSpeed;
+        currentAmmo--; 
+    }
+
+    //inheriting classes can override this to make it easier to have different types of projectiles
+    protected virtual void InitializeProjectile(Projectile projectile)
+    {
+        projectile.Initialize(owner, damage, GetProjectileSpeed(), projectileLifetime);       
     }
 
     protected float GetProjectileSpeed()

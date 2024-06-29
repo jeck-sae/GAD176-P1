@@ -16,8 +16,13 @@ public partial class Projectile : ManagedBehaviour
         Destroy(gameObject, duration);
     }
 
-
     public override void ManagedUpdate()
+    {
+        MoveUpdate();
+    }
+
+    //Inheriting classes can override this to move in a different way
+    protected void MoveUpdate()
     {
         float moveby = speed * Time.deltaTime;
         transform.position += transform.right * moveby;
@@ -27,21 +32,25 @@ public partial class Projectile : ManagedBehaviour
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer("Level"))
             return;
+
         var targetable = collision.GetComponent<Targetable>();
+        
+        if (targetable == shotBy)
+            return;
+        
         if (targetable == null)
         {
-            Impact();
+            Impact(collision, false);
             return;
         }
 
-        if (targetable == shotBy)
-            return;
-
         targetable.Damage(damage);
-        Impact();
+        Impact(collision, true);
     }
 
-    public void Impact()
+    //Inheriting classes can override this to have different
+    //impact behaviors (such as bouncing on walls, or piercing enemies)
+    public void Impact(Collider2D collision, bool hitEnemy)
     {
         enabled = false;
         Instantiate(impactEffect, transform.position, transform.rotation);

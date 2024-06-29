@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Linq;
-using System.Collections.Generic;
 using UnityEngine;
-using Unity.VisualScripting;
 
 public class ExplodeWeapon : Weapon
 {
@@ -13,6 +9,7 @@ public class ExplodeWeapon : Weapon
 
     public override void Attack()
     {
+        //get all the targetable scripts nearby and damage them
         var hit = Physics2D.CircleCastAll(transform.position, explosionRange, Vector2.zero);
         foreach (var item in hit) 
         { 
@@ -25,9 +22,12 @@ public class ExplodeWeapon : Weapon
             }
         }
 
-        // If close to player, screenshake
+        //TODO: if close to player, screenshake
 
+        //spawn the explosion effect
         var explosionEffect = Instantiate(explosionEffectPrefab, transform.position, transform.rotation);
+        
+        //kill the owner unit
         owner.Die();
     }
 }

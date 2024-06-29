@@ -1,18 +1,22 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+//Generic useful methods
 public static class Helpers
 {
+    //Caches the main camera (because calling Camera.main
+    //uses the FindObjectOfType function, which is very expensive)
     private static Camera _camera;
     public static Camera Camera {
         get {
-            if (_camera == null) _camera = Camera.main;
+            if (_camera == null) 
+                _camera = Camera.main;
             return _camera;
         }
     }
 
+    //Caches WaitForSeconds for coroutines
     private static readonly Dictionary<float, WaitForSeconds> WaitDictionary = new Dictionary<float, WaitForSeconds>();
     public static WaitForSeconds GetWait(float time)
     {
@@ -23,6 +27,7 @@ public static class Helpers
         return WaitDictionary[time];
     }
 
+    //returns true if the cursor is over some UI
     private static PointerEventData _eventDataCurrentPosition;
     private static List<RaycastResult> _raycastResults;
     public static bool IsOverUI { 
@@ -41,7 +46,7 @@ public static class Helpers
         return result;
     }
 
-
+    //destroys all children of a GameObject
     public static void DestroyChildren(this Transform t)
     {
         foreach (Transform c in t) Object.Destroy(c.gameObject);

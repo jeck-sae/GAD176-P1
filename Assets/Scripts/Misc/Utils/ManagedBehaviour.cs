@@ -1,5 +1,7 @@
-using System.Collections.Generic;
+using UnityEngine;
 
+
+//allows me to decide when to call the update method of any script (for example to pause the game)
 public class ManagedBehaviour : ManagedBehaviourBase
 {
     private bool initialized;
@@ -74,3 +76,22 @@ public class ManagedBehaviour : ManagedBehaviourBase
     }
 }
 
+
+public class ManagedBehaviourBase : MonoBehaviour
+{
+    public virtual void Update()
+    {
+    }
+
+    public virtual void FixedUpdate()
+    {
+    }
+
+    public virtual void LateUpdate()
+    {
+    }
+
+    protected virtual void Awake()
+    {
+    }
+}

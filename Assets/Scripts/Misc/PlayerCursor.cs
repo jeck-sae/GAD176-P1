@@ -52,6 +52,7 @@ public class PlayerCursor : ManagedBehaviour
         {
             currentInteractable.CursorStay();
         }
+
         if (currentInteractable != null)
         {
             if (Input.GetMouseButtonDown(0))
